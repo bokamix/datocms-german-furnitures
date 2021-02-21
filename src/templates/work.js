@@ -61,9 +61,12 @@ export default ({ data }) => {
         <Layout>
             <article className="sheet">
                 <HelmetDatoCms seo={data.datoCmsWork.seoMetaTags} />
+
                 <div className="sheet__inner">
                     <h1 className="sheet__title">{data.datoCmsWork.title}</h1>
+
                     <p className="sheet__lead">{data.datoCmsWork.excerpt}</p>
+
                     <div className="sheet__slider">
                         <Gallery photos={images} onClick={toggleLightBox} />
                         {isLightBoxOpen && (
@@ -81,6 +84,7 @@ export default ({ data }) => {
                             />
                         )}
                     </div>
+
                     <div
                         className="sheet__body"
                         dangerouslySetInnerHTML={{
