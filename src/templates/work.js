@@ -11,30 +11,8 @@ export default ({ data }) => {
     const [isLightBoxOpen, setIsLightboxOpen] = useState(false);
     const [images, setImages] = useState([]);
 
-    const randomInteger = (min, max) => {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-
-    const getImageSize = (aspectRatio) => {
-        const randomNumber = randomInteger(1, 3);
-        console.log('randomNumber: ', randomNumber);
-        if (aspectRatio < 0.85) {
-            if (randomNumber === 1) return { width: 1, height: 2 };
-            else if (randomNumber === 2) return { width: 2, height: 3 };
-            else return { width: 3, height: 4 };
-        } else if (aspectRatio > 1.2) {
-            if (randomNumber === 1) return { width: 2, height: 1 };
-            else if (randomNumber === 2) return { width: 3, height: 2 };
-            else return { width: 1, height: 0.5 };
-        } else {
-            if (randomNumber === 1) return { width: 1, height: 1 };
-            else if (randomNumber === 2) return { width: 2, height: 2 };
-            else return { width: 3, height: 3 };
-        }
-    };
-
     const toggleLightBox = (event, obj) => {
-        handleCurrentImageIndexChange(obj.index);
+        setCurrentImageIndex(obj.index);
         setIsLightboxOpen((prev) => !prev);
     };
 
@@ -45,16 +23,13 @@ export default ({ data }) => {
         (currentImageIndex + images.length + num) % images.length;
 
     useEffect(() => {
-        const photos = data.datoCmsWork.gallery.map(({ fluid }) => {
-            const imgSize = getImageSize(fluid.aspectRatio);
-            return {
-                src: fluid.src,
-                width: imgSize.width,
-                height: imgSize.height,
-            };
-        });
+        const images = data.datoCmsWork.gallery.map(({ fluid }) => ({
+            src: fluid.src,
+            width: fluid.width,
+            height: fluid.height,
+        }));
 
-        setImages(photos);
+        setImages(images);
     }, [data.datoCmsWork.gallery]);
 
     return (
@@ -69,6 +44,7 @@ export default ({ data }) => {
 
                     <div className="sheet__slider">
                         <Gallery photos={images} onClick={toggleLightBox} />
+
                         {isLightBoxOpen && (
                             <Lightbox
                                 mainSrc={images[currentImageIndex].src}
@@ -113,7 +89,8 @@ export const query = graphql`
                     imgixParams: { fm: "jpg", auto: "compress" }
                 ) {
                     src
-                    aspectRatio
+                    width
+                    height
                 }
             }
             descriptionNode {
